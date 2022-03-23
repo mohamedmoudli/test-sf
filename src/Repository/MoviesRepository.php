@@ -44,6 +44,12 @@ class MoviesRepository extends ServiceEntityRepository
             $this->_em->flush();
         }
     }
+    public function findMovies(){
+      return $this->createQueryBuilder('m')
+      ->orderBy('m.nbShare' , 'DESC')
+      ->setMaxResults(3)
+      ->getQuery()->getResult();
+    }
 
     // /**
     //  * @return Movies[] Returns an array of Movies objects

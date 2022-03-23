@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Movies;
+use App\Repository\MoviesRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,25 +15,7 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 class MoviesController extends AbstractController
 {
     public function __construct( private HttpClientInterface $client){
-        ;
-    }
-    #[Route('/email')]
-    public function sendEmail(MailerInterface $mailer): Response
-    {
-        $email = (new Email())
-            ->from('mohamedmouldi95@gmail.com')
-            ->to('mohamedmouldi95@gmail.com')
-            //->cc('cc@example.com')
-            //->bcc('bcc@example.com')
-            //->replyTo('fabien@example.com')
-            //->priority(Email::PRIORITY_HIGH)
-            ->subject('Time for Symfony Mailer!')
-            ->text('Sending emails is fun again!')
-            ->html('<p>See Twig integration for better HTML integration!</p>');
 
-        $mailer->send($email);
-
-        return $this->json('success');
     }
     #[Route('/movies', name: 'app_movies')]
     public function index(ManagerRegistry $doctrine): Response
@@ -61,11 +44,23 @@ class MoviesController extends AbstractController
             $movie->setVideo($mov['video']);
             $movie->setVoteAverage($mov['vote_average']);
             $movie->setVoteCount($mov['vote_count']);
+            $movie->setNbShare(0);
             $entityManager->persist($movie);
 
         }
         $entityManager->flush();
 
         return $this->json('success') ;
+    }
+
+    #[Route('/list/movies', name: 'index_movies')]
+    public function movies(MoviesRepository $moviesRepository): Response
+    {
+        $firstMovies = $moviesRepository->findMovies();
+        $movies = $moviesRepository->findAll();
+        return $this->render('movies/index.html.twig', [
+            'movies'=>$movies ,
+            'firstMovies'=>$firstMovies
+        ]);
     }
 }
