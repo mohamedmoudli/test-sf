@@ -10,6 +10,7 @@ use Doctrine\DBAL\Driver\IBMDB2\Driver;
 use Doctrine\DBAL\Driver\PDO\Exception;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Messenger\MessageBusInterface;
@@ -30,24 +31,25 @@ class ApiMoviesController extends AbstractController
     {
      return $this->json($moviesRepository->findAll());
     }
-    #[Rest\Post('/api/share/movies', name: 'app_api_movies')]
-    public function share(MoviesRepository $moviesRepository , Request $request , MessageBusInterface $bus): Response
+
+    #[Rest\Get('/api/share/movies/{id}', name: 'share_movies')]
+    public function share( MessageBusInterface $bus , Movies $movie): Response
     {
-        $email = $request->request->get('email');
-        $idMovie = $request->request->get('idMovie');
-        $movie = $moviesRepository->findOneBy(['idMovie'=>$idMovie]);
-        $bus->dispatch(new ShareMovie($email , $movie));
-        return $this->json($moviesRepository->findAll());
+        $body = $this->renderView('email/details_movie.html.twig',
+            [ 'movie'=>$movie ]
+        );
+        $bus->dispatch(new ShareMovie($body , $movie));
+        return $this->json('success');
     }
 
-    #[Rest\Get('/api/movies/{id}', name: 'app_api_movies')]
-    public function getMovie(MoviesRepository $moviesRepository ,int $id ): Response
+    #[Rest\Get('/api/movies/{id}', name: 'get_movies')]
+    public function getMovie(int $id  ,MessageBusInterface $bus , ParameterBagInterface $params): Response
     {
         $response = $this->client->request(
             'GET',
-            'https://api.themoviedb.org/3/movie/'.$id.'?api_key=c89646cb9c2f9f7a6144c074fff0e9c7'
+            $params->get('domain_api').'/3/movie/'.$id.'?api_key='.$params->get('api_key')
         );
-        $movie = $response->toArray()['results'];
+        $movie = $response->toArray();
         return $this->json($movie);
     }
 

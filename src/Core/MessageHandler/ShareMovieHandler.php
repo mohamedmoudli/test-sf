@@ -20,14 +20,10 @@ class ShareMovieHandler
         $entityManager = $this->doctrine->getManager();
         $email = (new Email())
             ->from('mohamedmouldi95@gmail.com')
-            ->to($message->getContent())
-            //->cc('cc@example.com')
-            //->bcc('bcc@example.com')
-            //->replyTo('fabien@example.com')
-            //->priority(Email::PRIORITY_HIGH)
-            ->subject('Time for Symfony Mailer!')
-            ->text('Sending emails is fun again!')
-            ->html('<p>See Twig integration for better HTML integration!</p>');
+            ->to('mohamedmouldi95@gmail.com')
+            ->subject('Details Films')
+            ->text('Details Films')
+            ->html($message->getContent());
 
         $this->mailer->send($email);
         $movie = $message->getMovie();
@@ -35,7 +31,6 @@ class ShareMovieHandler
         $entityManager->merge($movie);
         $entityManager->flush();
 
-        return $this->json('success');
 
     }
 

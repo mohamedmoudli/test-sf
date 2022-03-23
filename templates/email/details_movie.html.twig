@@ -1,0 +1,137 @@
+<section class="content-header">
+    <div class="container">
+        <h1>Details Films</h1>
+        <div class="row">
+            <div class="col-md-6">
+                <p>Id</p>
+            </div>
+            <div class="col-md-6">
+                <p>{{ movie.idMovies }}</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <p>adult</p>
+            </div>
+            <div class="col-md-6">
+                {% if movie.adult %}
+                    <p>True</p>
+                {% else %}
+                    <p>False</p>
+                {% endif %}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <p>backdropPath</p>
+            </div>
+            <div class="col-md-6">
+                <img src="{{  domain_image }}{{ movie.backdropPath }}">
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <p>genreIds</p>
+            </div>
+            <div class="col-md-6">
+                {% for genreId in movie.genreIds %}
+                    <p>{{ genreId }}</p>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <p>originalLanguage</p>
+            </div>
+            <div class="col-md-6">
+                <p>{{ movie.originalLanguage }}</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <p>originalTitle</p>
+            </div>
+            <div class="col-md-6">
+                <p>{{ movie.originalTitle }}</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <p>overview</p>
+            </div>
+            <div class="col-md-6">
+                <p>{{ movie.overview }}</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <p>popularity</p>
+            </div>
+            <div class="col-md-6">
+                <p>{{ movie.popularity }}</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <p>posterPath</p>
+            </div>
+            <div class="col-md-6">
+                <img src="{{  domain_image }}{{ movie.posterPath }}">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <p>releaseDate</p>
+            </div>
+            <div class="col-md-6">
+                <p>{{ movie.releaseDate | date('Y-m-d') }}</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <p>title</p>
+            </div>
+            <div class="col-md-6">
+                <p>{{ movie.title }}</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <p>video</p>
+            </div>
+            <div class="col-md-6">
+                {% if movie.video %}
+                    <p>True</p>
+                {% else %}
+                    <p>False</p>
+                {% endif %}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <p>voteAverage</p>
+            </div>
+            <div class="col-md-6">
+                <p>{{ movie.voteAverage }}</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <p>voteCount</p>
+            </div>
+            <div class="col-md-6">
+                <p>{{ movie.voteCount }}</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <p>nbShare</p>
+            </div>
+            <div class="col-md-6">
+                <p>{{ movie.nbShare }}</p>
+            </div>
+        </div>
+    </div>
+
+</section>

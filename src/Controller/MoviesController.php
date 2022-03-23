@@ -6,6 +6,7 @@ use App\Entity\Movies;
 use App\Repository\MoviesRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
@@ -18,12 +19,13 @@ class MoviesController extends AbstractController
 
     }
     #[Route('/movies', name: 'app_movies')]
-    public function index(ManagerRegistry $doctrine): Response
+    public function index(ManagerRegistry $doctrine , ParameterBagInterface $params): Response
     {
+
         $entityManager = $doctrine->getManager();
         $response = $this->client->request(
             'GET',
-            'https://api.themoviedb.org/3/discover/movie?primary_release_date.lte=2022-03-22&api_key=c89646cb9c2f9f7a6144c074fff0e9c7'
+            $params->get('domain_api').'/3/discover/movie?primary_release_date.lte='.date('Y-m-d').'&api_key='.$params->get('api_key')
         );
         $movies = $response->toArray()['results'];
         $i = 0;
@@ -63,4 +65,20 @@ class MoviesController extends AbstractController
             'firstMovies'=>$firstMovies
         ]);
     }
+
+    #[Route('/movies/{id}', name: 'show_movies')]
+    public function show( Movies $movie  , ParameterBagInterface $params): Response
+    {
+        $response = $this->client->request(
+            'GET',
+            $params->get('domain_api').'/3/movie/'.$movie->getIdMovies().'/credits?api_key='.$params->get('api_key')
+        );
+        $actors = $response->toArray();
+        $actors = $actors['cast'];
+        return $this->render('movies/show.html.twig', [
+            'movie'=>$movie ,
+            'actors'=>$actors
+        ]);
+    }
+
 }
